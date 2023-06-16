@@ -1,9 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteContact } from '../redux/pbSlice';
 
-const ContactList = ({ contacts, onDelete }) => {
+const ContactList = () => {
+  const contacts = useSelector(state => state.contacts);
+  const filter = useSelector(state => state.filter);
+
+  const filterContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
   const dispatch = useDispatch();
 
   const handleDelete = id => {
@@ -14,7 +21,7 @@ const ContactList = ({ contacts, onDelete }) => {
     <div>
       <span>Contacts</span>
       <ul>
-        {contacts.map(contact => (
+        {filterContacts.map(contact => (
           <li key={contact.id}>
             <span>{contact.name}</span>
             <span>{contact.number}</span>
@@ -24,17 +31,6 @@ const ContactList = ({ contacts, onDelete }) => {
       </ul>
     </div>
   );
-};
-
-ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ),
-  onDelete: PropTypes.func.isRequired,
 };
 
 export default ContactList;

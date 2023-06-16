@@ -1,12 +1,25 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import { addContact } from '../redux/pbSlice';
 
-const ContactForm = ({ onSubmit }) => {
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../redux/pbSlice';
+import { nanoid } from 'nanoid';
+
+const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts);
+
+  const handleOnSubmitAdd = () => {
+    const alreadyAddedContact = contacts.find(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+    if (alreadyAddedContact) {
+      alert(`Contact with name ${name} already exists in the phonebook.`);
+      return;
+    }
+    dispatch(addContact({ name, number, id: nanoid() }));
+  };
 
   const handleChangeName = event => {
     const { value } = event.target;
@@ -20,7 +33,7 @@ const ContactForm = ({ onSubmit }) => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    dispatch(addContact({ name, number }));
+    handleOnSubmitAdd();
     setName('');
     setNumber('');
   };
@@ -55,10 +68,6 @@ const ContactForm = ({ onSubmit }) => {
       <button type="submit">Add Contact</button>
     </form>
   );
-};
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
 };
 
 export default ContactForm;

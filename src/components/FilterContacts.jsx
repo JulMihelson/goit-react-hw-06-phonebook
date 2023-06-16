@@ -1,9 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import { useDispatch } from 'react-redux';
 import { applyFilter } from '../redux/pbSlice';
 
-const FilterContacts = action => {
+const FilterContacts = () => {
   const dispatch = useDispatch();
 
   const handleChange = event => {
@@ -15,14 +15,10 @@ const FilterContacts = action => {
     <div>
       <label>
         Filter contacts by name:
-        <input type="text" action={handleChange} />
+        <input type="text" onChange={handleChange} />
       </label>
     </div>
   );
-};
-
-FilterContacts.propTypes = {
-  onChange: PropTypes.func.isRequired,
 };
 
 export default FilterContacts;
