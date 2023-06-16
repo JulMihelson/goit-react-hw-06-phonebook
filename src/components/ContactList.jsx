@@ -1,18 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import DeleteContacts from './DeleteContacts';
+import { useDispatch } from 'react-redux';
+import { deleteContact } from '../redux/pbSlice';
 
 const ContactList = ({ contacts, onDelete }) => {
+  const dispatch = useDispatch();
+
+  const handleDelete = id => {
+    dispatch(deleteContact(id));
+  };
+
   return (
     <div>
       <span>Contacts</span>
       <ul>
         {contacts.map(contact => (
-          <DeleteContacts
-            key={contact.id}
-            contact={contact}
-            onDelete={onDelete}
-          />
+          <li key={contact.id}>
+            <span>{contact.name}</span>
+            <span>{contact.number}</span>
+            <button onClick={() => handleDelete(contact.id)}>Delete</button>
+          </li>
         ))}
       </ul>
     </div>

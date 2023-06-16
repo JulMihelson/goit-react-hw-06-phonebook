@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addContact, applyFilter, deleteContact } from '../redux/pbSlice';
 import ContactList from './ContactList';
 import FilterContacts from './FilterContacts';
 import ContactForm from './ContactForm';
 import { nanoid } from 'nanoid';
 
 const Phonebook = () => {
-  const [contacts, setContacts] = useState(() => {
-    return JSON.parse(localStorage.getItem('contacts')) || [];
-  });
-
-  const [filter, setFilter] = useState('');
+  const contacts = useSelector(state => state.contacts);
+  const filter = useSelector(state => state.filter);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
@@ -17,8 +17,9 @@ const Phonebook = () => {
 
   const handleChange = event => {
     const { value } = event.target;
-    setFilter(value);
+    dispatch(applyFilter(value));
   };
+
   const handleOnSubmitAdd = ({ name, number }) => {
     const alreadyAddedContact = contacts.find(
       contact => contact.name.toLowerCase() === name.toLowerCase()
@@ -27,16 +28,11 @@ const Phonebook = () => {
       alert(`Contact with name ${name} already exists in the phonebook.`);
       return;
     }
-    setContacts(prevContacts => [
-      ...prevContacts,
-      { name, number, id: nanoid() },
-    ]);
+    dispatch(addContact({ name, number, id: nanoid() }));
   };
 
   const handleDelete = id => {
-    setContacts(prevContacts =>
-      prevContacts.filter(contact => contact.id !== id)
-    );
+    dispatch(deleteContact(id));
   };
 
   return (
