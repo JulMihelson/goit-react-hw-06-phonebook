@@ -1,5 +1,8 @@
 import React from 'react';
 import Phonebook from './Phonebook';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from 'redux/store';
+import { Provider } from 'react-redux';
 
 export const App = () => {
   return (
@@ -13,7 +16,11 @@ export const App = () => {
         color: '#010101',
       }}
     >
-      <Phonebook />
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <Phonebook />
+        </PersistGate>
+      </Provider>
     </div>
   );
 };
